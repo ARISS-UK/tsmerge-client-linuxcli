@@ -1,0 +1,13 @@
+client:
+{
+	mpegts_port: 9004
+	longmyndstatus_port: 9005	# Set to 0 to disable.
+}
+server:
+{
+	host: live.ariss.org
+	port: 5678
+
+	callsign = GOONHILLY
+	key = 32foo3p4
+}

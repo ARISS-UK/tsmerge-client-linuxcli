@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+source_dir="$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)"
+cd "$source_dir"
+
+services="tsmerge-client-linuxcli"
+
+if [[ $(id -u) -ne 0 ]];
+then
+  echo "Error: Script must be run as superuser!";
+  exit;
+fi
+
+if [ -z "$1" ]
+then
+  echo "Service user required: ./install <user>"
+  exit;
+fi
+
+service_user="$1"
+
+echo "Installing/updating ${services} as ${service_user}.."
+
+for service in $services; do
+  skel="${service}.service.skel"
+  temp="${service}.service"
+  sed -e "s#{{user}}#${service_user}#g" -e "s#{{directory}}#${source_dir}#g" < $skel > $temp
+  mv -f $temp /etc/systemd/system/
+done
+
+systemctl daemon-reload
+
+echo "Install Complete! Service has not been started or enabled.";

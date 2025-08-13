@@ -1,0 +1,15 @@
+[Unit]
+Description=HamTV TS Merger Linux CLI Client
+After=syslog.target
+
+[Service]
+Type=simple
+User={{user}}
+WorkingDirectory={{directory}}
+ExecStart={{directory}}/tsmerge-client-linuxcli -h none.live.ariss.org -c CALLSIGN -k KEY
+Restart=always
+RestartSec=2
+TimeoutStopSec=3
+
+[Install]
+WantedBy=multi-user.target
