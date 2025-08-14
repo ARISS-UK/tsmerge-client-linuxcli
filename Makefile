@@ -24,8 +24,8 @@ SRCS = ${SRCDIR}/main.c \
 
 all: $(BIN)
 
-$(BIN):
-	$(CC) $(CFLAGS) $(LIBFLAGS) $(SRCS) -I $(SRCDIR) -o $(BIN)
+$(BIN): $(SRCS)
+	$(CC) $(CFLAGS) $(LIBFLAGS) $(SRCS) -I $(SRCDIR) -o $@
 
 clean:
 	rm -fv *.o $(BIN)
