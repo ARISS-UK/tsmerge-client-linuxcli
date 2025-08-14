@@ -68,8 +68,8 @@ typedef struct {
 
     int16_t original_packet_length;
 
-    int32_t ts_total;
-    int32_t ts_loss;
+    uint32_t ts_total;
+    uint32_t ts_loss;
 
 } __attribute__((packed)) mxhbresp_header_t;
 
