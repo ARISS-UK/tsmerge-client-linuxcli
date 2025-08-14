@@ -73,6 +73,8 @@ typedef struct {
 
 } __attribute__((packed)) mxhbresp_header_t;
 
+#define MAX_BATCH_LEN       (10)
+
 typedef struct {
 
     /* Output UDP Socket */
@@ -89,7 +91,7 @@ typedef struct {
     uint64_t rx_sn_updated_ms;
     
     /* TS Packet Data buffer */
-    uint8_t data[4][MX_PACKET_LEN];
+    uint8_t data[MAX_BATCH_LEN][MX_PACKET_LEN];
 
     uint32_t data_cursor;
     uint32_t data_batch;
@@ -209,7 +211,7 @@ static void *mxhb_thread(void *arg)
 
   while(!tspush.app_exit)
   {
-    if(initial_maxlen_counter <= 10)
+    if(initial_maxlen_counter <= MAX_BATCH_LEN)
     {
         mxhb_buffer = malloc(initial_maxlen_counter * MX_PACKET_LEN);
         mxhb_buffer_len = initial_maxlen_counter * MX_PACKET_LEN;
@@ -236,7 +238,7 @@ static void *mxhb_thread(void *arg)
     send(tspush.output_socket, mxhb_buffer, mxhb_buffer_len, 0);
     free(mxhb_buffer);
 
-    if(initial_maxlen_counter <= 10)
+    if(initial_maxlen_counter <= MAX_BATCH_LEN)
     {
         sleep_ms(1000);
         initial_maxlen_counter++;
@@ -386,7 +388,7 @@ static void ts_udp_callback(uint64_t current_timestamp, uint8_t *buffer, size_t 
         if(tspush.data_cursor >= tspush.data_batch)
         {
             /* Send the full MX packet */
-            send(tspush.output_socket, tspush.data, MX_PACKET_LEN * 4, 0);
+            send(tspush.output_socket, tspush.data, MX_PACKET_LEN * tspush.data_cursor, 0);
             tspush.data_cursor = 0;
         }
     }
