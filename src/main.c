@@ -554,7 +554,7 @@ int main(int argc, char *argv[])
             else
             {
                 tspush.data_batch = MAX(tspush.data_batch, mxhbresp_ptr->original_packet_length / MX_PACKET_LEN);
-                printf("Heartbeat response: Tested size: %dB (max batch now: %u), TS Uploaded Total: %d, TS Uploaded Loss: %d\n",
+                printf("Heartbeat response: Tested size: %dB (max batch now: %u), TS Uploaded Total: %u, TS Uploaded Loss: %u\n",
                     mxhbresp_ptr->original_packet_length,
                     tspush.data_batch,
                     mxhbresp_ptr->ts_total,
