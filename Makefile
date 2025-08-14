@@ -10,7 +10,7 @@ ifeq "$(GCCVERSION_GTEQ_10)" "1"
 endif
 
 CFLAGS += -O2 -ggdb -Wall -Wextra -Wpedantic -Wunused -Werror -D_FORTIFY_SOURCE=2 -fstack-protector-strong
-CFLAGS += -D BUILD_VERSION="\"$(shell git describe --dirty --always)\""	\
+CFLAGS += -D BUILD_VERSION="\"$(shell git describe --dirty --always 2>/dev/null || echo 'untracked')\""	\
 		-D BUILD_DATE="\"$(shell date '+%Y-%m-%d %H:%M:%S')\""
 CFLAGS += -pthread
 
