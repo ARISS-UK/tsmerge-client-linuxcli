@@ -22,6 +22,7 @@
 #include <netdb.h>
 #include <signal.h>
 #include <pthread.h>
+#include <sys/utsname.h>
 
 #include "ts/ts.h"
 #include "util/udp.h"
@@ -411,6 +412,17 @@ int main(int argc, char *argv[])
     printf("========== tsmerge client ===========\n");
     printf(" * Build Version: %s\n", BUILD_VERSION);
     printf(" * Build Date:    %s\n", BUILD_DATE);
+
+    struct utsname utsname_output;
+    if(uname(&utsname_output) == 0)
+    {
+        printf(" * Runtime OS:    %s %s\n", utsname_output.version, utsname_output.machine);
+    }
+    else
+    {
+        printf(" * Runtime OS:    %s\n", "[unknown]");
+    }
+
     printf("=====================================\n");
     
     tspush.output_counter = 0;
