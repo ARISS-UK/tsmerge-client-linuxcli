@@ -77,8 +77,8 @@ typedef struct {
     /* Output UDP Socket */
     int output_socket;
 
-    char callsign[10];
-    char key[10];
+    char callsign[11]; // 1 guard byte to allow string functions
+    char key[11]; // 1 guard byte to allow string functions
     
     /* Output packet counter */
     uint32_t output_counter;
@@ -448,10 +448,12 @@ int main(int argc, char *argv[])
         
         case 'c': /* --callsign <id> */
             memcpy(tspush.callsign, optarg, MIN(10, strlen(optarg)));
+            tspush.callsign[10] = '\0';
             break;
         
         case 'k': /* --key <key> */
             memcpy(tspush.key, optarg, MIN(10, strlen(optarg)));
+            tspush.key[10] = '\0';
             break;
         
         case '?':
@@ -460,20 +462,32 @@ int main(int argc, char *argv[])
         }
     }
     
-    if(tspush.callsign[0] == '\0')
+    if(strlen(tspush.callsign) == 0)
     {
         printf("Error: A callsign (-c) is required\n");
         _print_usage();
         return(-1);
     }
 
-    if(tspush.key[0] == '\0')
+    if(strlen(tspush.key) == 0)
     {
         printf("Error: A key (-k) is required\n");
         _print_usage();
         return(-1);
     }
-    
+
+    printf(" * MPEG TS UDP Input Port:          %d\n", MPEGTS_UDP_PORT);
+    printf(" * Longmynd Status UDP Input Port:  %d\n", LONGMYNDSTATS_UDP_PORT);
+
+    printf(" * Server Hostname:                 %s\n", host);
+    printf(" * Server Port:                     %s\n", port);
+    printf(" * Server Protocol:                 %s\n", ai_family == AF_INET ? "IPv4" : "IPv6");
+
+    printf(" * Server Callsign:                 %s\n", tspush.callsign);
+    printf(" * Server Key:                      %s\n", tspush.key);
+
+    printf("=====================================\n");
+
     /* Open the outgoing socket */
     tspush.output_socket = _open_socket(host, port, ai_family);
     if(tspush.output_socket == -1)
