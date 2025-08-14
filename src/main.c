@@ -202,9 +202,9 @@ static void *mxhb_thread(void *arg)
   (void)arg;
 
   char *mxhb_buffer;
-  int mxhb_buffer_len;
+  int16_t mxhb_buffer_len;
 
-  int initial_maxlen_counter = 1;
+  int16_t initial_maxlen_counter = 1;
 
   while(!tspush.app_exit)
   {
@@ -318,7 +318,7 @@ static void ts_udp_callback(uint64_t current_timestamp, uint8_t *buffer, size_t 
             return;
         }
 
-        int c = p - &(ts_udp_buffer[0]);
+        int32_t c = p - &(ts_udp_buffer[0]);
 
         memmove(&(ts_udp_buffer[0]), p, (ts_udp_buffer_cursor - c));
         ts_udp_buffer_cursor -= c;
@@ -517,7 +517,7 @@ int main(int argc, char *argv[])
     }
     pthread_setname_np(ts_udp_thread_obj, "TS UDP");
 
-    int n = 0;
+    ssize_t n = 0;
     char udp_response_buffer[1024];
     while(!tspush.app_exit)
     {
