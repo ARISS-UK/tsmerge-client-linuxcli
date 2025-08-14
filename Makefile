@@ -3,7 +3,13 @@ BIN = tsmerge-client-linuxcli
 
 CC = gcc
 CFLAGS = -std=gnu11 -D_GNU_SOURCE
-CFLAGS += -fanalyzer -O2 -ggdb -Wall -Wextra -Wpedantic -Wunused -Werror -D_FORTIFY_SOURCE=2 -fstack-protector-strong
+
+GCCVERSION_GTEQ_10 := $(shell expr `gcc -dumpversion | cut -f1 -d.` \>= 10)
+ifeq "$(GCCVERSION_GTEQ_10)" "1"
+    CFLAGS += -fanalyzer
+endif
+
+CFLAGS += -O2 -ggdb -Wall -Wextra -Wpedantic -Wunused -Werror -D_FORTIFY_SOURCE=2 -fstack-protector-strong
 CFLAGS += -D BUILD_VERSION="\"$(shell git describe --dirty --always)\""	\
 		-D BUILD_DATE="\"$(shell date '+%Y-%m-%d %H:%M:%S')\""
 CFLAGS += -pthread
