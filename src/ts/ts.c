@@ -10,6 +10,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include <inttypes.h>
 #include "ts.h"
 
 int ts_parse_header(ts_header_t *ts, uint8_t * const data)
@@ -218,12 +219,12 @@ void ts_dump_header(ts_header_t *ts)
 		
 		if(ts->pcr_flag)
 		{
-			printf("    PCR %lu:%d\n", ts->pcr_base, ts->pcr_extension);
+			printf("    PCR %"PRIu64":%d\n", ts->pcr_base, ts->pcr_extension);
 		}
 		
 		if(ts->opcr_flag)
 		{
-			printf("    OPCR %lu:%d\n", ts->opcr_base, ts->opcr_extension);
+			printf("    OPCR %"PRIu64":%d\n", ts->opcr_base, ts->opcr_extension);
 		}
 		
 		if(ts->splicing_point_flag)
