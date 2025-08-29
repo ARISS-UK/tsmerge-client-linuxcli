@@ -2,4 +2,5 @@
 *.swp
 *.o
 *.d
+config.txt
 tsmerge-client-linuxcli
