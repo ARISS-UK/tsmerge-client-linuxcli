@@ -35,6 +35,12 @@ int ts_parse_header(ts_header_t *ts, uint8_t * const data)
 	ts->payload_flag                 = (data[3] & 0x10) >> 4;
 	ts->continuity_counter           = data[3] & 0x0F;
 	ts->payload_offset               = 4;
+
+	if(ts->transport_error_indicator == 1)
+	{
+		/* Packet marked as containing errors, validation not required */
+		return(TS_OK);
+	}
 	
 	/* Adaptation field (optional) */
 	if(ts->adaptation_field_flag == 1)
