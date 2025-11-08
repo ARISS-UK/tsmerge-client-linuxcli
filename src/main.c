@@ -34,6 +34,17 @@
 #define MPEGTS_UDP_PORT         (9002)
 #define LONGMYNDSTATS_UDP_PORT  (9003)
 
+#define PERMITTED_TS_PIDS_COUNT (7)
+uint16_t permitted_ts_pids[PERMITTED_TS_PIDS_COUNT] = {
+    0x0000, // PAT
+    0x0010, // NIT
+    0x0011, // SDT
+    0x0100, // HAMTV Video
+    0x0101, // HAMTV Audio
+    0x0102, // PMT
+    0x1FFF  // [Stuffing]
+};
+
 #define MX_MAGICBYTES_VALUE     (0x55A2)
 typedef struct {
     uint16_t magic_bytes;
@@ -347,17 +358,40 @@ static void ts_udp_callback(uint64_t current_timestamp, uint8_t *buffer, size_t 
         if(ts_parse_header(&ts, &tspush.data[tspush.data_cursor][sizeof(mx_header_t)]) != TS_OK)
         {
             /* Don't transmit packets with invalid headers */
-            printf("TS_INVALID\n");
+            printf("TS: Error decoding packet\n");
             continue;
         }
 
-        current_timestamp_ms = timestamp_ms();
+        if(ts.transport_error_indicator == 1)
+        {
+            /* Demodulator has marked the packet as containing errors, don't transmit */
+            printf("TS: Transport Error Indicated\n");
+            continue;
+        }
 
         /* We don't transmit NULL/padding packets */
         if(ts.pid == TS_NULL_PID)
         {
             continue;
         }
+
+        /* Don't forward PIDs that we're not expecting */
+        /*  These shouldn't exist in our TS stream but for some receivers they currently do */
+        bool pid_is_ok = false;
+        for(int i = 0; i < PERMITTED_TS_PIDS_COUNT; i++)
+        {
+            if(ts.pid == permitted_ts_pids[i])
+            {
+                pid_is_ok = true;
+                break;
+            }
+        }
+        if(!pid_is_ok)
+        {
+            continue;
+        }
+
+        current_timestamp_ms = timestamp_ms();
 
         mx_header_t *mx_header_ptr = (mx_header_t *)&(tspush.data[tspush.data_cursor]);
 
