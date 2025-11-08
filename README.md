@@ -3,13 +3,20 @@
 ## Build Dependencies
 
 ```bash
-sudo apt install gcc make cppcheck
+sudo apt install gcc make
 ````
 
 ## Compile
 
 ```bash
-make cppcheck && make
+make
+```
+
+## Check (only required for development)
+
+```bash
+sudo apt install cppcheck && mkdir -p .cppcheck/
+make cppcheck
 ```
 
 ## Run

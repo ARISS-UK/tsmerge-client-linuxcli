@@ -3,4 +3,5 @@
 *.o
 *.d
 config.txt
+.cppcheck/
 tsmerge-client-linuxcli
