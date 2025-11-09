@@ -388,6 +388,7 @@ static void ts_udp_callback(uint64_t current_timestamp, uint8_t *buffer, size_t 
         }
         if(!pid_is_ok)
         {
+            printf("TS: Unexpected PID: 0x%04x\n", ts.pid);
             continue;
         }
 
